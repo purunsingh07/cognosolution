@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Assistant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        button {
+            font-size: 16px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        #output {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Voice Assistant</h1>
+    <button onclick="startListening()">Start Listening</button>
+    <div id="output"></div>
+    
+    <script>
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-US';
+        recognition.continuous = false;
+
+        recognition.onstart = () => {
+            document.getElementById('output').textContent = 'Listening...';
+        };
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            document.getElementById('output').textContent = 'You asked: ' + transcript;
+
+            // Perform actions based on the recognized speech
+            answerQuestion(transcript);
+        };
+
+        recognition.onerror = (event) => {
+            document.getElementById('output').textContent = 'Error: ' + event.error;
+        };
+
+        function startListening() {
+            recognition.start();
+        }
+
+        function answerQuestion(question) {
+            let answer;
+
+            if (question.toLowerCase().includes('html')) {
+                answer = 'HTML is a markup language that structures the content on the web.';
+            } else if (question.toLowerCase().includes('css')) {
+                answer = 'CSS stands for Cascading Style Sheets. It is used to style and layout web pages.';
+            } else if (question.toLowerCase().includes('javascript')) {
+                answer = 'JavaScript is a programming language that adds interactivity and dynamic content to web pages.';
+            } else {
+                answer = 'I am not sure how to answer that question.';
+            }
+
+            speak(answer);
+        }
+
+        function speak(text) {
+            const synth = window.speechSynthesis;
+            const utterance = new SpeechSynthesisUtterance(text);
+            synth.speak(utterance);
+        }
+    </script>
+</body>
+</html>
